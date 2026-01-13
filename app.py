@@ -40,10 +40,10 @@ async def main_page(client):
     
     show_splash(client)
 
-
+favicon_path = os.path.join(os.getcwd(),'statics', 'logo_vita_220px.png')
 ui.run(
     storage_secret='clave_vita_2026', 
     title='Vita App',
     port=8080,
-    favicon='statics/logo_vita_595px.png'
+    favicon=favicon_path
 )
