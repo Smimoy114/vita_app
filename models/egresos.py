@@ -2,58 +2,74 @@ import os
 from db_manager import DbManager
 
 
-class ProductosVendidosModel:
+class EgresosModel:
         
         create_table_query = """
-        CREATE TABLE IF NOT EXISTS productos_vendidos (
-        id_producto_vendido INTEGER PRIMARY KEY AUTOINCREMENT, 
-        id_producto_fk INTEGER NOT NULL, 
-        id_venta_fk INTEGER NOT NULL, 
-        cantidad INTEGER NOT NULL,
-        precio_unitario INTEGER NOT NULL,
-        FOREIGN KEY (id_producto_fk) REFERENCES productos(codigo_producto) ON DELETE RESTRICT, 
-        FOREIGN KEY (id_venta_fk) REFERENCES ventas(id_venta) ON DELETE CASCADE);
-        """
+        CREATE TABLE IF NOT EXISTS egresos (
+        id_egreso INTEGER PRIMARY KEY, 
+        monto INTEGER NOT NULL, 
+        descripcion_egreso TEXT NOT NULL, 
+        categoriaTEXT NOT NULL, 
+        fecha_egreso TEXT NOT NULL, 
+        hora_egreso TEXT NOT NULL);"""
         
         
-        def insert_pv(self, pv):
+        def insert_producto(self, egreso):
              
              nc = DbManager()
              nc.conectar() 
-              
-              
+                
              
              query = """ 
-             INSERT INTO productos_vendidos (
-             id_producto_fk, 
-             id_venta_fk, 
-             cantidad, 
-             precio_unitario) 
+             INSERT INTO egresos (
+             monto, 
+             descripcion_egreso, 
+             categoria, 
+             fecha_egreso, 
+             hora_egreso) 
              VALUES (
-             :id_producto_fk, 
-             :id_venta_fk, 
-             :cantidad, 
-             :precio_unitario); """
+             :monto, 
+             :descripcion_egreso, 
+             :categoria, 
+             :fecha_egreso, 
+             :hora_egreso); """
        
-             nc.ejecutar_sql(query, pv)
+             nc.ejecutar_sql(query, egreso)
              nc.cerrar_conexion()
       
 
-        def select_all_pv(self):
+        def select_all_egresos(self):
             
              nc = DbManager()
              nc.conectar() 
              
              query = """ 
              SELECT *
-             FROM productos_vendidos;
+             FROM egresos;
              """
        
              filas = nc.ejecutar_sql(query)
              nc.cerrar_conexion()
              return filas
             
-        def select_by_venta_pv(self, id):
+        def select_by_fecha_egreso(self, fecha):
+            
+              nc = DbManager()             
+             
+              query = """ 
+              SELECT *
+              FROM egresos 
+              WHERE fecha_egreso = :fecha_egreso;
+              """
+                 
+              nc.conectar()
+              filas = nc.ejecutar_sql(query, { 'fecha_egreso' : fecha })
+              nc.cerrar_conexion()
+              return filas 
+             
+             
+             
+        def select_by_id_egresos(self, id):
             
              nc = DbManager()             
               
@@ -61,45 +77,47 @@ class ProductosVendidosModel:
                  
                  query = """ 
                  SELECT *
-                 FROM productos_vendidos 
-                 WHERE id_venta_fk = :id_venta_fk;
+                 FROM egrsos 
+                 WHERE id_egreso = :id_egreso;
                  """
                  
                  nc.conectar()
-                 filas = nc.ejecutar_sql(query, {'id_venta_fk' : id })
+                 filas = nc.ejecutar_sql(query, {'id_egreso' : id })
                  nc.cerrar_conexion()
                  return filas
              else:
-                 print("el id debe ser un entero")
+                 print("el código debe ser un entero")
+             
              
              
             
-        def update_pv(self, pv):
+        def update_egreso(self, egreso):
             
              nc = DbManager()
              nc.conectar() 
                 
              
-             
              query = """ 
-             UPDATE productos_vendidos SET 
-             cantidad = :cantidad
-             WHERE id_producto_vendido = :id_producto_vendido; """
+             UPDATE egresos SET 
+             monto = :monto, 
+             descripcion_egreso = :descripcion_egreso, 
+             categoria = :categoria,  
+             WHERE id_egreso = :id_egreso; """
        
-             nc.ejecutar_sql(query, pv)
+             nc.ejecutar_sql(query, egreso)
              nc.cerrar_conexion()
       
 
-        def delete_pv(self, id):
+        def delete_egreso(self, id):
                         
              nc = DbManager()
              nc.conectar()
              
              query = """ 
-             DELETE FROM productos 
-             WHERE id_id_producto_vendido = :id_producto_vendido; """
+             DELETE FROM egreso 
+             WHERE id_egreso = :id_egreso; """
        
-             nc.ejecutar_sql(query, { 'id_producto_vendido' : id })
+             nc.ejecutar_sql(query, { 'id_egreso' : id })
              nc.cerrar_conexion()
              
              
@@ -125,7 +143,7 @@ if __name__ == "__main__":
       '''
       
       #select all test
-      '''
+      """
       
       pm = ProductoModel()
       
@@ -145,8 +163,8 @@ if __name__ == "__main__":
       for fila in filas:
           print(fila)   
           
-       '''   
-      
+         
+      """
       #update test
       '''
       

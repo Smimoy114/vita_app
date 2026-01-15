@@ -98,7 +98,22 @@ class VentaModel:
                  print("el código debe ser un entero")
              
              
+        def select_by_fecha_ventas(self, fecha):
             
+             nc = DbManager()             
+             query = """ 
+             SELECT *
+             FROM ventas 
+             WHERE fecha_venta = :fecha_venta;
+             """
+                 
+             nc.conectar()
+             filas = nc.ejecutar_sql(query, { 'fecha_venta' : fecha })
+             nc.cerrar_conexion()
+             return filas   
+             
+                
+        
         def update_venta(self, venta):
             
              nc = DbManager()
