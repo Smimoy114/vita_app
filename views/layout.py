@@ -20,7 +20,7 @@ def show_splash(client):
         ui.image('/statics/logo_vita_595px.png').classes('fade-in rotating-image').style('width: 595px')
 
 
-    content_body = ui.column().classes('w-full p-4 mt-16')
+    content_body = ui.column().classes('w-full items-center gap-0')
     content_body.set_visibility(False)
     with content_body:
         ui.label('Seleccione un módulo arriba para comenzar.').classes('text-grey')
