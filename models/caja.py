@@ -1,63 +1,84 @@
 import os
-from models.db_manager import DbManager
+from db_manager import DbManager
 
 
-class ProductoModel:
+class CajaModel:
         
         create_table_query = """
-        CREATE TABLE IF NOT EXISTS productos (
-        codigo_producto INTEGER PRIMARY KEY, 
-        nombre_producto TEXT NOT NULL, 
-        precio_producto INTEGER NOT NULL, 
-        descripcion_producto TEXT, 
-        formato_producto TEXT);"""
+        CREATE TABLE IF NOT EXISTS caja (
+        id_caja INTEGER PRIMARY KEY, 
+        fecha TEXT NOT NULL, 
+        saldo_inicial INTEGER, 
+        saldo_final_efectivo INTEGER, 
+        movimientos_efectivo INTEGER, 
+        movimientos_tarjeta INTEGER, 
+        movimientos_transferencia INTEGER, 
+        diferencia_efectivo INTEGER, 
+        observaciones TEXT);"""
         
         
-        def insert_producto(self, producto):
+        def insert_caja(self, caja):
              
              nc = DbManager()
              nc.conectar() 
-                
-             if 'descripcion_producto' not in producto:
-                 producto.update({'descripcion_producto': ''})
-                 
-             if 'formato_producto' not in producto:
-                 producto.update({'formato_producto' : ''})
-
-             
+                   
              query = """ 
-             INSERT INTO productos (
-             codigo_producto, 
-             nombre_producto, 
-             precio_producto, 
-             descripcion_producto, 
-             formato_producto) 
+             INSERT INTO caja (
+             fecha, 
+             saldo_inicial, 
+             saldo_final_efectivo, 
+             movimientos_efectivo, 
+             movimientos_tarjeta, 
+             movimientos_transferencia,
+             diferencia_efectivo, 
+             observaciones) 
              VALUES (
-             :codigo_producto, 
-             :nombre_producto, 
-             :precio_producto, 
-             :descripcion_producto, 
-             :formato_producto); """
+             :fecha, 
+             :saldo_inicial, 
+             :saldo_final_efectivo, 
+             :movimientos_efectivo, 
+             :movimientos_tarjeta, 
+             :movimientos_transferencia, 
+             :diferencia_efectivo, 
+             :observaciones); """
        
-             nc.ejecutar_sql(query, producto)
+             nc.ejecutar_sql(query, caja)
              nc.cerrar_conexion()
       
 
-        def select_all_productos(self):
+        def select_all_caja(self):
             
              nc = DbManager()
              nc.conectar() 
              
              query = """ 
              SELECT *
-             FROM productos;
+             FROM caja;
              """
        
              filas = nc.ejecutar_sql(query)
              nc.cerrar_conexion()
              return filas
+ 
             
-        def select_by_id_productos(self, id):
+
+        def select_by_fecha_caja(self, fecha):
+            
+             nc = DbManager()
+             nc.conectar() 
+             
+             query = """ 
+             SELECT *
+             FROM caja
+             WHERE fecha = :fecha;
+             """
+       
+             filas = nc.ejecutar_sql(query, { 'fecha' : fecha })
+             nc.cerrar_conexion()
+             return filas
+                       
+                                             
+        def select_by_id_caja(self, id):
             
              nc = DbManager()             
               
@@ -65,12 +86,12 @@ class ProductoModel:
                  
                  query = """ 
                  SELECT *
-                 FROM productos 
-                 WHERE codigo_producto = :codigo_producto;
+                 FROM caja 
+                 WHERE id_caja = :id_caja;
                  """
                  
                  nc.conectar()
-                 filas = nc.ejecutar_sql(query, {'codigo_producto' : id })
+                 filas = nc.ejecutar_sql(query, { 'id_caja' : id })
                  nc.cerrar_conexion()
                  return filas
              else:
@@ -78,38 +99,35 @@ class ProductoModel:
              
              
             
-        def update_producto(self, producto):
+        def update_caja(self, caja):
             
              nc = DbManager()
              nc.conectar() 
-                
-             if 'descripcion_producto' not in producto:
-                 producto.update({'descripcion_producto': ''})
-                 
-             if 'formato_producto' not in producto:
-                 producto.update({'formato_producto' : ''})
-
              
              query = """ 
              UPDATE productos SET 
-             nombre_producto = :nombre_producto, 
-             precio_producto = :precio_producto, 
-             descripcion_producto = :descripcion_producto, 
-             formato_producto = :formato_producto 
-             WHERE codigo_producto =:codigo_producto; """
+             fecha = :fecha, 
+             saldo_inicial = :saldo_inicial, 
+             saldo_final_efectivo = :saldo_final_efectivo, 
+             movimientos_efectivo = :movimientos_efectivo, 
+             movimientos_tarjeta = :movimientos_tarjeta, 
+             movimientos_transferencia = :movimientos_transferencia,
+             diferencia_efectivo = :diferencia_efectivo, 
+             observaciones = :observaciones 
+             WHERE id_caja = :id_caja; """
        
-             nc.ejecutar_sql(query, producto)
+             nc.ejecutar_sql(query, caja)
              nc.cerrar_conexion()
       
 
-        def delete_producto(self, id):
+        def delete_caja(self, id):
                         
              nc = DbManager()
              nc.conectar()
              
              query = """ 
-             DELETE FROM productos 
-             WHERE codigo_producto = :codigo_producto; """
+             DELETE FROM caja 
+             WHERE id_caja = :id_caja; """
        
              nc.ejecutar_sql(query, { 'codigo_producto' : id })
              nc.cerrar_conexion()
@@ -137,7 +155,7 @@ if __name__ == "__main__":
       '''
       
       #select all test
-      
+      '''
       pm = ProductoModel()
       
       filas = pm.select_all_productos()
@@ -157,7 +175,7 @@ if __name__ == "__main__":
           print(fila)   
           
          
-      
+      '''
       #update test
       '''
       

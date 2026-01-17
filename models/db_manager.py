@@ -20,6 +20,7 @@ class DbManager:
              try:
                  
                  self.conn = sqlite3.connect(self.db_name) 
+                 self.conn.row_factory = sqlite3.Row 
                  self.cursor = self.conn.cursor() 
                  print(f"Conexión a '{self.db_name}' establecida exitosamente.") 
                  self.conn.execute("PRAGMA foreign_keys = ON;")
