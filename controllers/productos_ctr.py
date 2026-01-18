@@ -43,3 +43,18 @@ class ProductoController:
         
         self.service.agregar_producto(datos_bd)
 
+
+    def actualizar_producto(self, datos_ui):
+
+        if not datos_ui.get('nombre') or not datos_ui.get('codigo'):
+            raise ValueError("El nombre y el código son obligatorios.")        
+                        
+        datos_bd = {
+            'codigo_producto': int(datos_ui['codigo']),
+            'nombre_producto': datos_ui['nombre'],
+            'precio_producto': int(datos_ui['precio']),
+            'descripcion_producto': datos_ui['descripcion'],
+            'formato_producto': datos_ui['formato'],
+        }
+        
+        self.service.update_producto_service(datos_bd)

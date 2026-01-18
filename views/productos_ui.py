@@ -6,8 +6,7 @@ controller = ProductoController()
 
 # 1. MANEJADORES DE EVENTOS (Fuera de la renderización para mayor claridad)
 def handle_edit(row_data, edit_fields, edit_dialog):
-    print(f"DATOS RECIBIDOS PARA EDITAR: {row_data}") # Ver en consola
-    # Llenar los campos del diálogo con los datos de la fila
+    print(f"DATOS RECIBIDOS PARA EDITAR: {row_data}") 
     edit_fields['codigo'].value = row_data.get('codigo')
     edit_fields['nombre'].value = row_data.get('nombre')
     edit_fields['precio'].value = row_data.get('precio')
@@ -16,7 +15,7 @@ def handle_edit(row_data, edit_fields, edit_dialog):
     edit_dialog.open()
 
 def handle_delete(row_data, products_table):
-    print(f"DATOS RECIBIDOS PARA ELIMINAR: {row_data}") # Ver en consola
+    print(f"DATOS RECIBIDOS PARA ELIMINAR: {row_data}")
     try:
         controller.eliminar_producto(row_data['codigo'])
         products_table.rows = controller.listar_productos_para_ui()
@@ -40,7 +39,8 @@ def setup_edit_dialog(products_table):
             controller.actualizar_producto(data)
             products_table.rows = controller.listar_productos_para_ui()
             dialog.close()
-            ui.notify('Actualizado con éxito')
+            ui.notify(f'Producto {data["nombre"]} actualizado', type='positive')
+            #ui.notify('Actualizado con éxito')
         
         ui.button('Guardar', on_click=save)
     return dialog, fields
@@ -90,12 +90,10 @@ def render_productos(container):
 
                     ui.button('Guardar Producto', on_click=agregar_y_limpiar).classes('w-full mt-2')
 
-        # --- SECCIÓN: TABLA (Lo que ya tienes) ---
+        # --- SECCIÓN: TABLA ---
         ui.label('Registros Existentes').classes('text-lg font-bold mb-2')
-        # ... aquí sigue tu tabla con el slot de acciones corregido ...
 
-
-        # 1. Definimos columnas (la de acciones debe estar presente)
+        # 1. Definimos columnas 
         columns = [
             {'name': 'acciones', 'label': 'Acciones', 'field': 'acciones', 'align': 'center'},
             {'name': 'codigo', 'label': 'Código', 'field': 'codigo', 'align': 'left'},
@@ -113,8 +111,7 @@ def render_productos(container):
         # 3. Setup del diálogo
         edit_dialog, edit_fields = setup_edit_dialog(products_table)
 
-        # 4. EL SLOT CORRECTO (Usando la propiedad :props de Quasar)
-        # Esto evita pasar funciones de Python al frontend
+        # 4.SLOT
         products_table.add_slot('body-cell-acciones', '''
             <q-td :props="props">
                 <q-btn flat round dense color="blue" icon="edit" @click="$parent.$emit('editar', props.row)" />
@@ -123,7 +120,6 @@ def render_productos(container):
         ''')
 
         # 5. Escuchamos los eventos desde Python
-        # Aquí es donde imprimimos por consola los valores
         products_table.on('editar', lambda msg: handle_edit(msg.args, edit_fields, edit_dialog))
         products_table.on('borrar', lambda msg: handle_delete(msg.args, products_table))
 
