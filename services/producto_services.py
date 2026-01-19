@@ -18,3 +18,8 @@ class ProductoService:
     def update_producto_service(self, datos_producto):
         
         self.model.update_producto(datos_producto)
+        
+        
+    def eliminar_producto_service(self, id):
+        
+        self.model.delete_producto(id)

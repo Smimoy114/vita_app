@@ -58,3 +58,9 @@ class ProductoController:
         }
         
         self.service.update_producto_service(datos_bd)
+        
+        
+    def eliminar_producto(self, id):
+        
+        self.service.eliminar_producto_service(id)
+

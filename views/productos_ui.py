@@ -14,14 +14,35 @@ def handle_edit(row_data, edit_fields, edit_dialog):
     edit_fields['descripcion'].value = row_data.get('descripcion')
     edit_dialog.open()
 
-def handle_delete(row_data, products_table):
-    print(f"DATOS RECIBIDOS PARA ELIMINAR: {row_data}")
+def confirmar_eliminacion_dialog(row_data, products_table):
+    
+    with ui.dialog() as dialog, ui.card().classes('p-4'):
+        with ui.column().classes('items-center w-full'):
+            ui.icon('warning', color='warning').classes('text-5xl')
+            ui.label(f'¿Eliminar "{row_data.get("nombre")}"?').classes('text-lg font-bold')
+            ui.label('Esta acción no se puede deshacer y fallará si el producto tiene ventas asociadas.').classes('text-center mb-4')
+            
+            with ui.row().classes('w-full justify-end'):
+                ui.button('Cancelar', on_click=dialog.close).props('flat')
+                # Al confirmar, llamamos a la lógica real de borrado
+                ui.button('Eliminar', color='red', 
+                          on_click=lambda: ejecutar_borrado_real(dialog, row_data, products_table))
+    
+    dialog.open()
+
+
+async def ejecutar_borrado_real(dialog, row_data, products_table):
     try:
         controller.eliminar_producto(row_data['codigo'])
         products_table.rows = controller.listar_productos_para_ui()
-        ui.notify('Producto eliminado', type='warning')
+        ui.notify(f'Producto {row_data.get("nombre")} eliminado', type='warning')
+        dialog.close()
     except Exception as e:
-        ui.notify(f'Error: {e}', type='negative')
+        # Aquí capturarás el BusinessError que definimos anteriormente
+        ui.notify(f'{e}', type='negative')
+        dialog.close()
+        
+        
 
 # 2. CONFIGURACIÓN DEL DIÁLOGO
 def setup_edit_dialog(products_table):
@@ -126,7 +147,6 @@ def render_productos(container):
 # --- FUNCIONES DE MANEJO ---
 def handle_edit(row_data, edit_fields, edit_dialog):
     
-    print(f"\n>>> DATOS FILA SELECCIONADA: {row_data}")
     
     edit_fields['codigo'].value = row_data.get('codigo')
     edit_fields['nombre'].value = row_data.get('nombre')
@@ -136,5 +156,7 @@ def handle_edit(row_data, edit_fields, edit_dialog):
     edit_dialog.open()
 
 def handle_delete(row_data, products_table):
-    print(f"\n>>> ELIMINANDO FILA: {row_data}")
-    # ... lógica de borrado ...
+    
+    # En lugar de borrar, abrimos el diálogo de confirmación
+    confirmar_eliminacion_dialog(row_data, products_table)
+
