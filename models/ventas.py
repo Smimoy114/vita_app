@@ -60,8 +60,11 @@ class VentaModel:
              :hora_venta, 
              :fecha_venta); """
        
-             nc.ejecutar_sql(query, venta)
-             nc.cerrar_conexion()
+             cursor = nc.conexion.cursor() # Accedemos al cursor directamente 
+             cursor.execute(query, venta) id_generado = cursor.lastrowid # <--- ESTE ES EL DATO CLAVE 
+             nc.conexion.commit() 
+             nc.cerrar_conexion() 
+             return id_generado
       
 
         def select_all_ventas(self):
@@ -127,7 +130,7 @@ class VentaModel:
                  venta.update({'propina' : ''})
              
              if 'estado_pago' not in venta:
-                 venta.update({'estado_pago' : 'pendiente'} )
+                 venta.update({'estado_pago' : 'PENDIENTE'} )
 
              
              query = """ 
@@ -157,76 +160,4 @@ class VentaModel:
              
              
  
-       
-#######     TEST     #######
-
-
-if __name__ == "__main__":
-      
-      #insert test
-      '''
-      vnt = {'cliente' : 'jacinto', 'total' : 1400 }
-      
-      vm = VentaModel()
-      
-      vm.insert_venta(vnt)
-      
-      '''
-      
-      #select all test
-      
-      '''
-      vm = VentaModel()
-      
-      filas = vm.select_all_ventas()
-      
-      for fila in filas:
-          print(fila)      
-      '''
-      
-      
-      #select by id test
-      
-      '''
-      vm = VentaModel()
-      
-      filas = vm.select_by_id_ventas(2)
-      
-      for fila in filas:
-          print(fila)   
-          
-         '''
-      
-      #update test
-      
-      '''
-      pdt3 = {'id_venta' : '2', 'cliente' : 'ensalada', 'total' : 4500}
-      
-      vm = VentaModel()
-      
-      vm.update_venta(pdt3)
-      
-      vm = VentaModel()
-      
-      filas = vm.select_all_ventas()
-      
-      for fila in filas:
-          print(fila)       
-      
-      
-      
-      #delete test
-      
-      vm = VentaModel()
-      
-      vm.delete_venta(3)
-      
-      vm = VentaModel()
-      
-      filas = vm.select_all_ventas()
-      
-      for fila in filas:
-          print(fila)  
-      
-      
-      '''
+  

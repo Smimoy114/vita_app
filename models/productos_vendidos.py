@@ -96,8 +96,8 @@ class ProductosVendidosModel:
              nc.conectar()
              
              query = """ 
-             DELETE FROM productos 
-             WHERE id_id_producto_vendido = :id_producto_vendido; """
+             DELETE FROM productos_vendidos 
+             WHERE id_producto_vendido = :id_producto_vendido; """
        
              nc.ejecutar_sql(query, { 'id_producto_vendido' : id })
              nc.cerrar_conexion()
@@ -105,78 +105,3 @@ class ProductosVendidosModel:
              
  
        
-#######     TEST     #######
-
-
-if __name__ == "__main__":
-      
-      #insert test
-      '''
-      pdt = {'codigo_producto' : '22', 'nombre_producto' : 'crema + ensalada2', 'descripcion_producto' : 'null', 'formato_producto' : 'unidad', 'precio_producto' : 4500}
-      pm = ProductoModel()
-      
-      pm.insert_producto(pdt)
-      '''
-      '''
-      pdt2 = {'codigo_producto' : '20', 'nombre_producto' : 'crema', 'descripcion_producto' : 'null', 'formato_producto' : 'unidad', 'precio_producto' : 3500}
-      pm = ProductoModel()
-      
-      pm.insert_producto(pdt2)
-      '''
-      
-      #select all test
-      '''
-      
-      pm = ProductoModel()
-      
-      filas = pm.select_all_productos()
-      
-      for fila in filas:
-          print(fila)      
-      
-      
-      
-      #select by id test
-      
-      pm = ProductoModel()
-      
-      filas = pm.select_by_id_productos(202)
-      
-      for fila in filas:
-          print(fila)   
-          
-       '''   
-      
-      #update test
-      '''
-      
-      pdt3 = {'codigo_producto' : '20', 'nombre_producto' : 'ensalada', 'descripcion_producto' : 'null', 'formato_producto' : 'unidad', 'precio_producto' : 2500}
-      
-      pm = ProductoModel()
-      
-      pm.update_producto(pdt3)
-      
-      pm = ProductoModel()
-      
-      filas = pm.select_all_productos()
-      
-      for fila in filas:
-          print(fila)       
-      
-      '''
-      
-      #delete test
-      '''
-      pm = ProductoModel()
-      
-      pm.delete_producto(22)
-      
-      pm = ProductoModel()
-      
-      filas = pm.select_all_productos()
-      
-      for fila in filas:
-          print(fila)  
-      
-      
-      '''

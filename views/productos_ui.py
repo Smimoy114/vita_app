@@ -79,7 +79,7 @@ def render_productos(container):
                     # Campos del formulario
                     nuevo_codigo = ui.number('Código', format='%.0f').classes('w-full')
                     nuevo_nombre = ui.input('Nombre').classes('w-full')
-                    nuevo_precio = ui.number('Precio', format='%.2f').props('suffix="$"').classes('w-full')
+                    nuevo_precio = ui.number('Precio', format='%.0f').props('suffix="$"').classes('w-full')
                     nuevo_formato = ui.input('Formato (ej: unidad)').classes('w-full')
                     nueva_desc = ui.textarea('Descripción').classes('w-full')
 
@@ -112,7 +112,7 @@ def render_productos(container):
                     ui.button('Guardar Producto', on_click=agregar_y_limpiar).classes('w-full mt-2')
 
         # --- SECCIÓN: TABLA ---
-        ui.label('Registros Existentes').classes('text-lg font-bold mb-2')
+        ui.label('Registros Existentes').classes()
 
         # 1. Definimos columnas 
         columns = [
@@ -127,7 +127,7 @@ def render_productos(container):
         initial_rows = controller.listar_productos_para_ui()
         
         # 2. Creamos la tabla
-        products_table = ui.table(columns=columns, rows=initial_rows, row_key='codigo').classes('w-full')
+        products_table = ui.table(columns=columns, rows=initial_rows, row_key='codigo').classes('w-full inherit-font-styles')
         
         # 3. Setup del diálogo
         edit_dialog, edit_fields = setup_edit_dialog(products_table)
