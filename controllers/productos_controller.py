@@ -1,6 +1,6 @@
 # controllers/productos_ctr.py
 
-from services.producto_services import ProductoService
+from services.productos_services import ProductoService
 
 class ProductoController:
     def __init__(self):
@@ -12,7 +12,7 @@ class ProductoController:
         NiceGUI espera una lista de diccionarios donde las claves coinciden con 'field' de las columnas.
         """
         productos_bd = self.service.obtener_todos_los_productos()
-        
+
         # Mapeamos las claves de la BD (con sufijo _producto) a las claves esperadas por NiceGUI
         productos_ui = []
         for p in productos_bd:
@@ -40,15 +40,15 @@ class ProductoController:
             'descripcion_producto': datos_ui['descripcion'],
             'formato_producto': datos_ui['formato'],
         }
-        
+
         self.service.agregar_producto(datos_bd)
 
 
     def actualizar_producto(self, datos_ui):
 
         if not datos_ui.get('nombre') or not datos_ui.get('codigo'):
-            raise ValueError("El nombre y el código son obligatorios.")        
-                        
+            raise ValueError("El nombre y el código son obligatorios.")
+
         datos_bd = {
             'codigo_producto': int(datos_ui['codigo']),
             'nombre_producto': datos_ui['nombre'],
@@ -56,11 +56,11 @@ class ProductoController:
             'descripcion_producto': datos_ui['descripcion'],
             'formato_producto': datos_ui['formato'],
         }
-        
+
         self.service.update_producto_service(datos_bd)
-        
-        
+
+
     def eliminar_producto(self, id):
-        
+
         self.service.eliminar_producto_service(id)
 

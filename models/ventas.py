@@ -4,30 +4,30 @@ from db_manager import DbManager
 
 
 class VentaModel:
-        
+ 
         create_table_query = """
         CREATE TABLE IF NOT EXISTS ventas (
-        id_venta INTEGER PRIMARY KEY, 
-        cliente TEXT NOT NULL, 
-        total INTEGER NOT NULL DEFAULT 0, 
+        id_venta INTEGER PRIMARY KEY,
+        cliente TEXT NOT NULL,
+        total INTEGER NOT NULL DEFAULT 0,
         estado_pago TEXT NOT NULL CHECK (estado_pago IN ('PENDIENTE', 'PAGADO')),
-        forma_pago TEXT CHECK (forma_pago IN ('EFECTIVO', 'TARJETA', 'TRANSFERENCIA')), 
+        forma_pago TEXT CHECK (forma_pago IN ('EFECTIVO', 'TARJETA', 'TRANSFERENCIA')),
         propina INTEGER DEFAULT 0,
-        hora_venta TEXT NOT NULL DEFAULT '00:00', 
+        hora_venta TEXT NOT NULL DEFAULT '00:00',
         fecha_venta TEXT NOT NULL DEFAULT '01-01-2026');"""
-        
-        
+
+
         def insert_venta(self, venta):
-             
+
              nc = DbManager()
              nc.conectar()
-             
+
              ahora = datetime.now()
              fecha_venta = ahora.strftime("%d-%m-%Y")
              hora_venta = ahora.strftime("%H:%M")
              #print(f"fecha = {fecha_venta}")
              #print(f"hora = {hora_venta}")
-             
+
              venta.update({'fecha_venta' : fecha_venta,  'hora_venta' : hora_venta})
 
                 
@@ -61,7 +61,8 @@ class VentaModel:
              :fecha_venta); """
        
              cursor = nc.conexion.cursor() # Accedemos al cursor directamente 
-             cursor.execute(query, venta) id_generado = cursor.lastrowid # <--- ESTE ES EL DATO CLAVE 
+             cursor.execute(query, venta) 
+             id_generado = cursor.lastrowid # <--- ESTE ES EL DATO CLAVE 
              nc.conexion.commit() 
              nc.cerrar_conexion() 
              return id_generado
@@ -115,6 +116,24 @@ class VentaModel:
              nc.cerrar_conexion()
              return filas   
              
+             
+        def select_by_estado_y_fecha_ventas(self, estado, fecha):
+            
+             nc = DbManager()             
+             query = """ 
+             SELECT *
+             FROM ventas 
+             WHERE 
+             estado_pago = :estado_pago 
+             AND 
+             fecha_venta = :fecha_venta;
+             """
+                 
+             nc.conectar()
+             filas = nc.ejecutar_sql(query, { 'estado_pago' : estado, 'fecha_venta' : fecha })
+             nc.cerrar_conexion()
+             return filas   
+                          
                 
         
         def update_venta(self, venta):

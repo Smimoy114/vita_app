@@ -1,59 +1,3 @@
-#import sys
-#import os
-
-#current_dir = os.path.dirname(os.path.abspath(__file__)) 
-#if current_dir not in sys.path: 
-#    sys.path.append(current_dir)
-
-#from nicegui import app, ui
-#from views.layout import show_splash
-
-
-# Configuración de rutas y almacenamiento
-#current_dir = os.path.dirname(os.path.abspath(__file__))
-#static_path = os.path.join(current_dir, 'statics')
-#app.add_static_files('/statics', static_path) 
-#os.environ['NICEGUI_STORAGE_PATH'] = os.path.join(current_dir, 'vita_storage_data')
-
-#def aplicar_estilos_guardados():
-#    s = app.storage.user
-#    
-#    if not s:
-#        return
-
-#    ui.run_javascript(f'''
-#        document.body.style.setProperty("--q-primary", "{s.get('primary_color', '#1976d2')}");
-#        document.body.style.fontSize = "{s.get('font_size', 16)}px";
-#        document.body.style.fontFamily = "{s.get('font_family', 'Arial')}";
-#        
-#        // Para las tarjetas, creamos o actualizamos un estilo dinámico
-#        let style = document.getElementById("custom-persistence-styles");
-#        if (!style) {{
-#            style = document.createElement("style");
-#            style.id = "custom-persistence-styles";
-#            document.head.appendChild(style);
-#        }}
-#        style.innerHTML = ".q-card {{ background-color: {s.get('card_color', '#ffffff')} !important; }}";
-#    ''')
-
-
-#@ui.page('/')
-#async def main_page(client):
-#    await client.connected()
-#    s = app.storage.user
-#    
-#    aplicar_estilos_guardados()
-#    
-#    
-#    show_splash(client)
-
-#favicon_path = os.path.join(os.getcwd(),'statics', 'logo_vita_220px.png')
-#ui.run(
-#    storage_secret='clave_vita_2026', 
-#    title='Vita App',
-#    port=8080,
-#    favicon=favicon_path
-#)
 import sys
 import os
 import asyncio
@@ -73,14 +17,14 @@ def kill_process_on_port(port):
                     pid = line.strip().split()[-1]
                     print(f"Windows: Matando proceso {pid} en puerto {port}")
                     subprocess.run(f"taskkill /F /PID {pid}", shell=True)
-        
+
         else: # Termux / Linux / macOS
             # lsof -t devuelve solo el PID
             pid = subprocess.check_output(["lsof", "-t", f"-i:{port}"]).decode().strip()
             if pid:
                 for p in pid.split('\n'):
                     os.kill(int(p), signal.SIGKILL)
-                    
+
     except subprocess.CalledProcessError:
         # El puerto ya está libre
         pass
@@ -91,8 +35,8 @@ kill_process_on_port(PORT)
 
 
 # Ajuste de rutas para módulos internos
-current_dir = os.path.dirname(os.path.abspath(__file__)) 
-if current_dir not in sys.path: 
+current_dir = os.path.dirname(os.path.abspath(__file__))
+if current_dir not in sys.path:
     sys.path.append(current_dir)
 
 from nicegui import app, ui
@@ -109,6 +53,8 @@ def aplicar_estilos_guardados():
         return
 
     # Inyectamos los estilos guardados por el usuario
+    #print(s)
+
     ui.run_javascript(f'''
         document.body.style.setProperty("--q-primary", "{s.get('primary_color', '#89d6c3')}");
         document.body.style.fontSize = "{s.get('font_size', 16)}px";
@@ -127,14 +73,14 @@ def aplicar_estilos_guardados():
 async def main_page(client):
     # Esperar conexión del cliente (importante para ejecutar JS)
     await client.connected()
-    
+
     # 1. Aplicar preferencias visuales
     aplicar_estilos_guardados()
-    
+
     # 2. Construir la estructura base (Canvas)
     # Esta función devuelve un diccionario con las referencias a los contenedores
     layout_elements = build_main_layout()
-    
+
     # 3. Ejecutar el Splash Screen y la transición al Layout
     await start_splash_transition(layout_elements)
 
@@ -142,9 +88,9 @@ async def main_page(client):
 if __name__ in {"__main__", "__mp_main__"}:
     favicon_path = os.path.join(os.getcwd(), 'statics', 'logo_vita_220px.png')
     ui.run(
-        storage_secret='clave_vita_2026', 
+        storage_secret='clave_vita_2026',
         title='Vita App',
         port=8080,
         favicon=favicon_path,
-        #reload=False # Recomendado para entornos Termux/Pydroid
+        #reload=False
     )

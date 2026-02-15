@@ -1,6 +1,6 @@
 import json
 from nicegui import ui
-from controllers.productos_ctr import ProductoController
+from controllers.productos_controller import ProductoController
 
 controller = ProductoController()
 
